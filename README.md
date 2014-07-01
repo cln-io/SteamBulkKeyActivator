@@ -13,8 +13,7 @@
 	you can press escape at any time to cancel the macro
 
 ##Download 	
-	[Download the latest release](../releases)
-##Demo 
+	[Download the latest release]{94e4318dcd7fa4da9c4538e0a0fb54a3fbed2b62}
 
 ![Demo](https://raw.githubusercontent.com/colingg/SteamBulkKeyActivator/master/Recources/demo.gif)
 
