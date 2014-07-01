@@ -8,6 +8,9 @@ A little macro program that allows you to activate steam keys in bulk
 	run the script/program and it will read line per line of the keys.txt file and activate them one by one in steam.
 	After a successful activation it will cancel the game's installation so it does not install.
 	
+	Do not touch keyboard and or mouse
+	you can press escape at any time to cancel the macro
+	
 ![Demo](https://raw.githubusercontent.com/colingg/SteamBulkKeyActivator/master/Recources/demo.gif)
 
 
