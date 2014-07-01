@@ -13,7 +13,7 @@
 	you can press escape at any time to cancel the macro
 
 ##Download 	
-	SHA: 94e4318dcd7fa4da9c4538e0a0fb54a3fbed2b62
+	[You can download the latest release over here](https://github.com/colingg/SteamBulkKeyActivator/releases)
 
 ![Demo](https://raw.githubusercontent.com/colingg/SteamBulkKeyActivator/master/Recources/demo.gif)
 
