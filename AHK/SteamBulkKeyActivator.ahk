@@ -231,15 +231,9 @@ steam_check_if_key_worked(){ 				;check if steam key worked
 		steam_click_next() ;we click next (past print screen)
 		applog("now we need to check if we are on the install screen")
 		;in order to see if they key worked we need to check if we are on the install screen, if we are press cancel & report that the key worked
-		if(steam_check_if_on_install_screen()){
-			;normal cancel click won't work here
-			steam_install_click_cancel()
-			return true
-		}else{
-			;how would we end up here anway ?
-			applog("/!\ ERROR ! /!\ Something went wrong after redeeming the key and canceling the installation !?")
-			ExitApp
-		}
+		steam_check_if_on_install_screen()
+		steam_install_click_cancel()
+
 	}
 }
 steam_check_invalid_or_too_many_attempts(){ ;check if steam is angry at us
@@ -266,17 +260,6 @@ steam_check_if_on_install_screen(){			;check if we are on the install screen
 	StringTrimLeft,gameTitle,WindowTitle,10
 	applog("adding game title to key log")
 	log_to_file(", 'game' => '" . gameTitle . "'",false)
-	MouseMove, 80,  232 ;move mouse 
-	applog("moved mouse to the dropdown")
-	Sleep,100
-	;MsgBox,"",A_Cursor
-	If(A_Cursor = "IBeam"){
-		applog("confirmed we are on the activation window")
-		return true
-	}else{
-		applog("we are not on the install window ?!")
-		return false
-	}
 }
 is_print_window(){							;way to check if we have a new product or a duplicate
 	applog("waiting 5 seconds for the print window to pop up")
