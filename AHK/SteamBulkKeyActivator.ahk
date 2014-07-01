@@ -40,6 +40,7 @@ steam_activate_key(key){ 					;method that takes a string variable (the key) and
 		applog("we got an empty key ? ignoring this one")
 		return
 	}
+	applog("[start of a new key]")
 	FormatTime, Time,, dd/MM/yyyy hh:mm:ss tt
 	log_to_file("`n[" . Time . "] " . "'key' =>" . " '" . key . "'",false)
 	steam_close_all()
@@ -61,6 +62,7 @@ steam_activate_key(key){ 					;method that takes a string variable (the key) and
 		;log_to_file("		<---- Failed",false)
 
 	}
+	applog("[end of this key]")
 	return
 }
 
@@ -84,6 +86,13 @@ steam_click_back(){							;click the back button
 	steam_activate_window()
 	MouseClick, left,  212,  568 ;click back
 	applog("> clicked back 		[activation]")
+	Sleep,100
+	return
+}
+steam_click_print(){						;click the print button
+	steam_activate_window()
+	MouseClick, left,  221,  407 ;click print
+	applog("> clicked print		[activation]")
 	Sleep,100
 	return
 }
@@ -141,10 +150,12 @@ steam_activate_install(){					;activate the installer window
 	Sleep,100
 }
 steam_wait_until_done(){					;steam working handler
+	;we need to wait for steam to stop working before we continue
 	applog("steam is working hold on ...")
 	Sleep,1000
 	WinWaitNotActive,Steam - Working
 	applog("steam is done working !")
+	;steam stopped freezing ! we can continue
 }
 steam_move_window(){						;move the steam activation window
 	steam_activate_window()
@@ -160,7 +171,7 @@ steam_open_activation_window(){				;steam open the activation window
 	return
 }
 steam_close_all(){ 							;this will close the activation window (it should not be open in the first place !) 
-	applog("requested to close all activation windows")
+	applog("requested to close all activation windows (and print)")
 	IfWinExist,Product Activation,
 	{
 		applog("Activation window exists !")
@@ -169,7 +180,7 @@ steam_close_all(){ 							;this will close the activation window (it should not 
 		steam_click_back()
 		steam_click_cancel()
 		applog("closed the activation window")
-		return
+		Sleep,100
 	}
 	IfWinExist,Install -,
 	{
@@ -179,9 +190,15 @@ steam_close_all(){ 							;this will close the activation window (it should not 
 		steam_install_click_cancel()
 		applog("Activated the install window and clicked cancel")
 		Sleep,100
-		return
 
 	}
+	IfWinExist,Print,
+	{
+		applog("Print is open, closing it")
+		WinKill,Print,
+		Sleep,100
+	}
+	return
 
 }
 steam_check_if_key_worked(){ 				;check if steam key worked
@@ -192,9 +209,18 @@ steam_check_if_key_worked(){ 				;check if steam key worked
 		steam_click_cancel()
 		return false
 	}else{
+		MsgBox,"",new product now
+		ExitApp
 		applog("steam reports that our key is valid")
 		;steam is happy !
-		steam_click_next() ;we click next
+		;make a difference between existing product and new product.
+		;we need to press the print button & close that window again
+		applog("checking if this is a new product")
+		steam_click_print()
+		if(is_print_window()){
+			;this means there is a print window & we closed it.
+		}
+		steam_click_next() ;we click next (past print screen)
 		applog("now we need to check if we are on the install screen")
 		;in order to see if they key worked we need to check if we are on the install screen, if we are press cancel & report that the key worked
 		if(steam_check_if_on_install_screen()){
@@ -244,7 +270,22 @@ steam_check_if_on_install_screen(){			;check if we are on the install screen
 		return false
 	}
 }
-
+is_print_window(){
+	applog("waiting 5 seconds for the print window to pop up")
+	WinWait, Print,,5 ;wait 5 seconds.
+	if ErrorLevel
+	{
+		applog("did not get a print window within 5 seconds")
+		return false
+	}else{
+		IfWinNotActive, Print, WinActivate, Print,
+		WinWaitActive, Print,
+		WinKill,Print,
+		applog("Print window was open, we closed it")
+		Sleep,100
+		return true
+	}
+}
 ;generic functions here
 
 log_to_file(text,newline){
