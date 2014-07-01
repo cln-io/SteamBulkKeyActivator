@@ -166,7 +166,7 @@ steam_send_input(input){					;send text to the steam window
 }
 ;#----------------------------------------- Methods / functions above  ----------------------------------------- 
 ;Main code goes here !
-steam_activate_key("test")
+steam_activate_key("testkey")
 Escape::
 ExitApp
 Return
