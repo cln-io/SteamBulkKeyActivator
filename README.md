@@ -22,10 +22,15 @@ you can press escape at any time to cancel the macro
 ![Demo](https://raw.githubusercontent.com/colingg/SteamBulkKeyActivator/master/Recources/demo.gif)
 
 ##VAC anti-cheat concerns
+
+Q:Is this allowed ? Can I get banned for this ? 
+A:Ofcourse,never.
+
 This script is written in AutoHotKey  
-Autohotkey
->AutoHotkey scripts can be used to launch programs, open documents, send keystrokes and send mouse clicks and movements.
-	
+http://ahkscript.org/
+>AutoHotkey (AHK) is a free, open-source macro-creation and automation software for Windows that allows users to automate repetitive tasks. It is driven by a scripting language that was initially aimed at providing keyboard shortcuts, otherwise known as hotkeys, that over time evolved into a full-fledged scripting language. 
+
+This is a script that automates the repetitive task of activating steam keys. as this does not inject anything whatsoever you don't have to worry about VAC.
 
 ##License
 	   Copyright 2014 colingg (colin.gg)
