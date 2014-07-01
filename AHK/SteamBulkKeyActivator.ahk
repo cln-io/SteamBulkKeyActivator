@@ -37,6 +37,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 steam_activate_key(key){ 					;method that takes a string variable (the key) and places it into the key box of steam activator window
 	if(key = ""){ ;check to make sure key is not empty
+		applog("we got an empty key ? ignoring this one")
 		return
 	}
 	FormatTime, Time,, dd/MM/yyyy hh:mm:ss tt
@@ -51,9 +52,14 @@ steam_activate_key(key){ 					;method that takes a string variable (the key) and
 	steam_click_next()
 	steam_wait_until_done()
 	if(steam_check_if_key_worked()){
-		log_to_file(" <--- Activated ",false)
+		applog("[sucessfull] key activated without problems !")
+		log_to_file(", 'success' => 'true'",false)
+		;log_to_file("		<---- Activated",false)
 	}else{
-		log_to_file(" <--- Failed ",false)
+		applog("[faillure] key failed to activate !")
+		log_to_file(", 'success' => 'false' ",false)
+		;log_to_file("		<---- Failed",false)
+
 	}
 	return
 }
@@ -266,7 +272,7 @@ applog("OS Version  =>" . A_OSVersion)
 applog("is x64      =>" . A_Is64bitOS)
 applog("is elevated =>" . A_IsAdmin)
 applog(" ---- console log -----")
-steam_activate_key("test-key")
+steam_activate_key("testkey")
 
 Escape::
 applog("pressed escape!")
