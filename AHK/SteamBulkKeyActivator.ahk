@@ -20,12 +20,13 @@
 
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 #Warn All, Off  ; Disable warnings (error dialog boxes being shown to user)
+#singleinstance force ;force looping
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ;#----------------------------------------- End of header ------------------------------------------------------ 
 ;#----------------------------------------- Methods / functions below  ----------------------------------------- 
 steam_activate_key(key){ 					;method that takes a string variable (the key) and places it into the key box of steam activator window
-	if(key = ""){
+	if(key = ""){ ;check to make sure key is not empty
 		return
 	}
 	steam_close_all()
@@ -35,7 +36,6 @@ steam_activate_key(key){ 					;method that takes a string variable (the key) and
 	steam_click_next()
 	steam_activate_product_code_field()
 	steam_send_input(key)
-	;!TODO check if we have an input ?
 	steam_click_next()
 	steam_wait_until_done()
 	if(steam_check_if_key_worked()){
@@ -59,14 +59,21 @@ steam_activate_window(){					;activate the steam window
 steam_close_all(){ 							;this will close the activation window (it should not be open in the first place !) 
 	IfWinExist,Product Activation,
 	{
+		steam_activate_window()
 		steam_click_back() ;click back 2 times to make sure we can cancel.
 		steam_click_back()
 		steam_click_cancel()
 		return
 	}
-	else
+	IfWinExist,Install -,
 	{
+		WinWait, Install -, 
+		IfWinNotActive, Install -, , WinActivate, Install -, 
+		WinWaitActive, Install -, 
+		MouseClick, left,  422,  568 ;click cancel.(we cant't use steam_click_cancel because this is not the activation window)
+		Sleep,100
 		return
+
 	}
 
 }
@@ -100,6 +107,13 @@ steam_check_invalid_or_too_many_attempts(){ ;check if steam is angry at us
 steam_check_if_on_install_screen(){			;check if we are on the install screen
 	;steam_activate_window() <--- does not work, becuase title changed
 	;name is "Install - Demolition Master 3D"
+	WinWait, Install -, 
+	IfWinNotActive, Install -, , WinActivate, Install -, 
+	WinWaitActive, Install -, 
+	WinMove, 100, 100 ;lets move the window to the left.
+	Sleep,100
+	WinGetTitle, gameTitle,
+	MsgBox, The game we activated is is "%gameTitle%".
 	MouseMove, 80,  232 ;move mouse 
 	MsgBox,"",A_Cursor
 	If(A_Cursor = "IBeam"){
@@ -152,4 +166,9 @@ steam_send_input(input){					;send text to the steam window
 }
 ;#----------------------------------------- Methods / functions above  ----------------------------------------- 
 ;Main code goes here !
-steam_activate_key("key here")
+steam_activate_key("test")
+Escape::
+ExitApp
+Return
+
+
