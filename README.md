@@ -1,7 +1,7 @@
-SteamBulkKeyActivator
+#Steam Bulk Key Activator
 =====================
 
-A little macro program that allows you to activate steam keys in bulk
+##A little macro program that allows you to activate steam keys in bulk
 
 	Add a keys.txt file in the root directory of the binary/script.
 	add 1 key per line and save the file.
@@ -11,10 +11,12 @@ A little macro program that allows you to activate steam keys in bulk
 	Do not touch keyboard and or mouse
 	you can press escape at any time to cancel the macro
 	
+##Demo 
+
 ![Demo](https://raw.githubusercontent.com/colingg/SteamBulkKeyActivator/master/Recources/demo.gif)
 
 
-
+##License
 	   Copyright 2014 colingg (colin.gg)
 
 	   Licensed under the Apache License, Version 2.0 (the "License");
