@@ -14,12 +14,12 @@ you can press escape at any time to cancel the macro
 
 ##Download 	
 
-![Release](https://raw.githubusercontent.com/colingg/SteamBulkKeyActivator/master/Recources/Releases.png)
+![Release](https://raw.githubusercontent.com/colingg/SteamBulkKeyActivator/master/Recources/web/Releases.png)
 
 [You can download the latest release over here](https://github.com/colingg/SteamBulkKeyActivator/releases)
 
 ##Demo
-![Demo](https://raw.githubusercontent.com/colingg/SteamBulkKeyActivator/master/Recources/demo.gif)
+![Demo](https://raw.githubusercontent.com/colingg/SteamBulkKeyActivator/master/Recources/web/demo.gif)
 
 ##VAC anti-cheat concerns
 This is a script that uses Autohotkey to emulate keyboard and mouse, no reasons to be concerned about VAC. ;)
