@@ -24,6 +24,7 @@ you can press escape at any time to cancel the macro
 ##VAC anti-cheat concerns
 
 Q:Is this allowed ? Can I get banned for this ? 
+
 A:Ofcourse,never.
 
 This script is written in AutoHotKey  
