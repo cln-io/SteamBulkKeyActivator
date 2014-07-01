@@ -22,7 +22,7 @@ you can press escape at any time to cancel the macro
 ![Demo](https://raw.githubusercontent.com/colingg/SteamBulkKeyActivator/master/Recources/demo.gif)
 
 ##VAC anti-cheat concerns
-
+This is a script that uses Autohotkey to emulate keyboard and mouse, no reasons to be concerned about VAC. ;)
 
 This script is written in AutoHotKey  
 http://ahkscript.org/
