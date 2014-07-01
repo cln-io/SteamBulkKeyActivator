@@ -14,7 +14,7 @@
 
 ##Download 	
 
-[You can download the latest release over here](../releases)
+[You can download the latest release over here](https://github.com/colingg/SteamBulkKeyActivator/releases)
 
 ##Demo
 ![Demo](https://raw.githubusercontent.com/colingg/SteamBulkKeyActivator/master/Recources/demo.gif)
