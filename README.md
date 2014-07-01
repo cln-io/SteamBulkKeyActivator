@@ -2,6 +2,8 @@ SteamBulkKeyActivator
 =====================
 
 A little macro program that allows you to activate steam keys in bulk
+![Demo](https://raw.githubusercontent.com/colingg/SteamBulkKeyActivator/master/Recources/demo.gif)
+
 
 
 	   Copyright 2014 colingg (colin.gg)
