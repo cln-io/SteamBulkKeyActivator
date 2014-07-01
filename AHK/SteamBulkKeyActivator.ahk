@@ -41,7 +41,9 @@ steam_activate_key(key){ 					;method that takes a string variable (the key) and
 		return
 	}
 	applog("[start of a new key]")
-	FormatTime, Time,, dd/MM/yyyy hh:mm:ss tt
+	
+	FormatTime, Time,, dd/MM/yyyy HH:mm:ss tt
+	log_to_file("`n[" . Time . "] " . "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ",false)
 	log_to_file("`n[" . Time . "] " . "'key' =>" . " '" . key . "'",false)
 	steam_close_all()
 	steam_open_activation_window()
@@ -276,7 +278,7 @@ steam_check_if_on_install_screen(){			;check if we are on the install screen
 		return false
 	}
 }
-is_print_window(){
+is_print_window(){							;way to check if we have a new product or a duplicate
 	applog("waiting 5 seconds for the print window to pop up")
 	WinWait, Print,,5 ;wait 5 seconds.
 	if ErrorLevel
@@ -294,7 +296,7 @@ is_print_window(){
 }
 ;generic functions here
 
-log_to_file(text,newline){
+log_to_file(text,newline){					;log to the keys file.
 	if(newline){
 		FileAppend,%text%`n, %A_WorkingDir%\activation.log
 		return
@@ -303,14 +305,17 @@ log_to_file(text,newline){
 		return
 	}
 }
-applog(text){
-	FormatTime, Time,, dd/MM/yyyy hh:mm:ss tt
+applog(text){								;log to the application file
+	FormatTime, Time,, dd/MM/yyyy HH:mm:ss tt
 	FileAppend, %Time% %text%`n, %A_WorkingDir%\app.log
 }
 
 
 ;#----------------------------------------- Methods / functions above  ----------------------------------------- 
 ;Main code goes here !
+applog("")
+applog("")
+applog("")
 applog(" ----- App start ------")
 applog(" ----- some info ------")
 applog("AHK version =>" . A_AhkVersion)
@@ -319,8 +324,28 @@ applog("OS Version  =>" . A_OSVersion)
 applog("is x64      =>" . A_Is64bitOS)
 applog("is elevated =>" . A_IsAdmin)
 applog(" ---- console log -----")
-steam_activate_key("testkey")
+MsgBox, 64, Automation, Please do not touch the keyboard or mouse while the macro is running.`n(press escape to stop the program at any time)
+IfExist, %A_WorkingDir%\keys.txt
+{
+	applog("found keys.txt")
+	Loop, read, %A_WorkingDir%\keys.txt
+	{
+		Loop, parse, A_LoopReadLine, %A_Tab%
+		{
+			steam_activate_key(A_LoopField)
+			Sleep,1000
+		}
+	}
+	MsgBox, 64, Success!, We looped through the entire keys.txt file.
+	run notepad %A_WorkingDir%\activation.log
 
+}else{
+	;add a keys.txt file plz
+	applog("we did not find any keys in keys.txt ! ")
+	MsgBox, 48, No keys.txt found !, Please add a keys.txt file in the root of this program.`n1 key per line.`nxxxx-xxxx-xxxx-xxxx
+	run notepad %A_WorkingDir%\keys.txt
+}
+ExitApp
 Escape::
 applog("pressed escape!")
 applog(" ----- App End ------")
