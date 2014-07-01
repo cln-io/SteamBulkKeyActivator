@@ -21,6 +21,11 @@
 ##Demo
 ![Demo](https://raw.githubusercontent.com/colingg/SteamBulkKeyActivator/master/Recources/demo.gif)
 
+##VAC anti-cheat concerns
+	This script is written in AutoHotKey  
+	Autohotkey
+	>AutoHotkey scripts can be used to launch programs, open documents, send keystrokes and send mouse clicks and movements.
+	
 
 ##License
 	   Copyright 2014 colingg (colin.gg)
