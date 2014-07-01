@@ -14,6 +14,7 @@
 
 ##Download 	
 
+![Release](https://raw.githubusercontent.com/colingg/SteamBulkKeyActivator/master/Recources/Release.png)
 [You can download the latest release over here](https://github.com/colingg/SteamBulkKeyActivator/releases)
 
 ##Demo
