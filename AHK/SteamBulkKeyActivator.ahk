@@ -345,6 +345,8 @@ IfExist, %A_WorkingDir%\keys.txt
 	MsgBox, 48, No keys.txt found !, Please add a keys.txt file in the root of this program.`n1 key per line.`nxxxx-xxxx-xxxx-xxxx
 	run notepad %A_WorkingDir%\keys.txt
 }
+applog("exiting app! bye bye !")
+applog(" ----- App End ------")
 ExitApp
 Escape::
 applog("pressed escape!")
