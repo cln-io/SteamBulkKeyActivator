@@ -4,13 +4,13 @@
 ## Activate keys in bulk
 ######A little macro program that allows you to activate steam keys in bulk
 
-	Add a keys.txt file in the root directory of the binary/script.
-	add 1 key per line and save the file.
-	run the script/program and it will read line per line of the keys.txt file and activate them one by one in steam.
-	After a successful activation it will cancel the game's installation so it does not install.
+Add a keys.txt file in the root directory of the binary/script.
+add 1 key per line and save the file.
+run the script/program and it will read line per line of the keys.txt file and activate them one by one in steam.
+After a successful activation it will cancel the game's installation so it does not install.
 	
-	Do not touch keyboard and or mouse
-	you can press escape at any time to cancel the macro
+Do not touch keyboard and or mouse
+you can press escape at any time to cancel the macro
 
 ##Download 	
 
@@ -22,9 +22,9 @@
 ![Demo](https://raw.githubusercontent.com/colingg/SteamBulkKeyActivator/master/Recources/demo.gif)
 
 ##VAC anti-cheat concerns
-	This script is written in AutoHotKey  
-	Autohotkey
-	>AutoHotkey scripts can be used to launch programs, open documents, send keystrokes and send mouse clicks and movements.
+This script is written in AutoHotKey  
+Autohotkey
+>AutoHotkey scripts can be used to launch programs, open documents, send keystrokes and send mouse clicks and movements.
 	
 
 ##License
