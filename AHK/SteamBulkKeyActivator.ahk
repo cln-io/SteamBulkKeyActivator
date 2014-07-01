@@ -179,8 +179,9 @@ steam_close_all(){ 							;this will close the activation window (it should not 
 		steam_click_back() ;click back 2 times to make sure we can cancel.
 		steam_click_back()
 		steam_click_cancel()
+		WinKill,Product Activation,
 		applog("closed the activation window")
-		Sleep,100
+		Sleep,1000
 	}
 	IfWinExist,Install -,
 	{
@@ -188,15 +189,16 @@ steam_close_all(){ 							;this will close the activation window (it should not 
 		steam_activate_install()
 		;cant use steam click,need installer clicks
 		steam_install_click_cancel()
+		WinKill,Install -,
 		applog("Activated the install window and clicked cancel")
-		Sleep,100
+		Sleep,1000
 
 	}
 	IfWinExist,Print,
 	{
 		applog("Print is open, closing it")
 		WinKill,Print,
-		Sleep,100
+		Sleep,1000
 	}
 	return
 
@@ -209,8 +211,6 @@ steam_check_if_key_worked(){ 				;check if steam key worked
 		steam_click_cancel()
 		return false
 	}else{
-		MsgBox,"",new product now
-		ExitApp
 		applog("steam reports that our key is valid")
 		;steam is happy !
 		;make a difference between existing product and new product.
@@ -218,6 +218,12 @@ steam_check_if_key_worked(){ 				;check if steam key worked
 		applog("checking if this is a new product")
 		steam_click_print()
 		if(is_print_window()){
+			applog("[new product] we activated a new product")
+			log_to_file(", 'new product' => 'true'",false)
+			;this means there is a print window & we closed it.
+		}else{
+			applog("[duplicate product] we activated a duplicate product")
+			log_to_file(", 'new product' => 'false'",false)
 			;this means there is a print window & we closed it.
 		}
 		steam_click_next() ;we click next (past print screen)
