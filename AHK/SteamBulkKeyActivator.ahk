@@ -26,7 +26,7 @@
 	License: Apache License, Version 2.0
 */
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
-#Warn All, Off  ; Disable warnings (error dialog boxes being shown to user)
+;#Warn All, Off  ; Disable warnings (error dialog boxes being shown to user)
 #singleinstance force ;force looping
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
@@ -47,12 +47,15 @@ steam_activate_key(key){ 					;method that takes a string variable (the key) and
 	log_to_file("`n[" . Time . "] " . "'key' =>" . " '" . key . "'",false)
 	steam_close_all()
 	steam_open_activation_window()
-	steam_move_window()
-	steam_click_next()
-	steam_click_next()
-	steam_activate_product_code_field()
+	get_button_pos()
+;	steam_move_window()
+	steam_click_next() ;or click_btn(2)
+;	steam_click_next()
+	steam_click_iagree() ;or click_btn(2)
+;	steam_activate_product_code_field()
 	steam_send_input(key)
-	steam_click_next()
+	;steam_click_next()
+	steam_click_iagree() ;or click_btn(2)
 	steam_wait_until_done()
 	if(steam_check_if_key_worked()){
 		applog("[sucessfull] key activated without problems !")
@@ -70,10 +73,61 @@ steam_activate_key(key){ 					;method that takes a string variable (the key) and
 
 ;mouse and keyboard interactions
 
+get_button_pos() {
+; button width = 465 - 374 = 91
+buttonwidth := 91
+; button height = 387 - 364 = 23
+; button x spacing = 11
+; button x offset (right) = 476 - 465 = 11
+xoffset := 11
+; button y offset (bottom) = 400 - 387 = 13
+yoffset := 13
+precision := 5
+;based on above, button locations are:
+; button 1 = BACK
+;   right - (3*xoffset + 2*buttonwidth + precision), bottom - (yoffset + precision) 
+; button 2 = NEXT, I AGREE
+;   right - (2*xoffset + buttonwidth + precision), bottom - (yoffset + precision)
+; button 3 = CANCEL, FINISH
+;   right - (xoffset + precision), bottom - (yoffset + precision)
+; THUS
+steam_activate_window()
+WinGetPos, , , wnWidth, wnHeight
+global ypos := wnHeight - (yoffset + precision)
+global xpos3 := wnWidth - (xoffset + precision)
+global xpos2 := xpos3 - (xoffset + buttonwidth)
+global xpos1 := xpos2 - (xoffset + buttonwidth)
+;Test moving to those co-ordinates
+Loop, 3 {
+	MouseMove, xpos%A_Index%, ypos
+	;MsgBox, , ,%xpos3% %ypos%
+	Sleep, 100
+}
+}
+
+click_btn(num) {
+	MouseClick, left, xpos%num%, ypos
+}
+
 steam_click_next(){							;click the next button 
 	steam_activate_window()
-	MouseClick, left,  320,  575 ;click next
+	;MouseClick, left,  320,  575 ;click next
+	Send {Tab}
+	Sleep,100
+	Send {Space}
 	applog("> clicked next 		[activation]")
+	Sleep,100
+	return
+}
+steam_click_iagree(){							;click the next button 
+	steam_activate_window()
+	;MouseClick, left,  320,  575 ;click next
+	Send {Tab}
+	Sleep,100
+	Send {Tab}
+	Sleep,100
+	Send {Space}
+	applog("> clicked I Agree	[activation]")
 	Sleep,100
 	return
 }
@@ -86,21 +140,23 @@ steam_click_cancel(){						;click the cancel button
 }
 steam_click_back(){							;click the back button
 	steam_activate_window()
-	MouseClick, left,  212,  568 ;click back
+	;MouseClick, left,  212,  568 ;click back
+	click_btn(1)
 	applog("> clicked back 		[activation]")
 	Sleep,100
 	return
 }
 steam_click_print(){						;click the print button
 	steam_activate_window()
-	MouseClick, left,  221,  407 ;click print
+	MouseClick, left,  225,  275 ;click print *VARIABLE*
 	applog("> clicked print		[activation]")
 	Sleep,100
 	return
 }
 steam_install_click_back(){ 				;install window click back
 	steam_activate_install()
-	MouseClick, left,  212,  568 ;click back
+	;MouseClick, left,  212,  568 ;click back
+	click_btn(1)
 	applog("> clicked back  	[install]")
 	Sleep,100
 	return
@@ -108,14 +164,22 @@ steam_install_click_back(){ 				;install window click back
 }
 steam_install_click_cancel(){ 				;install window click cancel
 	steam_activate_install()
-	MouseClick, left,  422,  568 ;click cancel.
+	;MouseClick, left,  422,  568 ;click cancel.
+	;click_btn(3)
+	;Send, {Esc}
+	Send {Tab}
+	Sleep,100
+	Send {Tab}
+	Sleep,100
+	Send {Space}	
 	applog("> clicked cancel 	[install]")
 	Sleep,100
 	return
 }
 steam_install_click_next(){ 				;install window click next
 	steam_activate_install()
-	MouseClick, left,  320,  575 ;click next
+	;MouseClick, left,  320,  575 ;click next
+	click_btn(2)
 	applog("> clicked next 		[install]")
 	Sleep,100
 	return
@@ -226,7 +290,7 @@ steam_check_if_key_worked(){ 				;check if steam key worked
 		}else{
 			applog("[duplicate product] we activated a duplicate product")
 			log_to_file(", 'new product' => 'false'",false)
-			;this means there is a print window & we closed it.
+			;this means there is no print window
 		}
 		steam_click_next() ;we click next (past print screen)
 		applog("now we need to check if we are on the install screen")
@@ -238,7 +302,7 @@ steam_check_if_key_worked(){ 				;check if steam key worked
 }
 steam_check_invalid_or_too_many_attempts(){ ;check if steam is angry at us
 	steam_activate_window()
-	MouseMove, 61,  207 ;move mouse to the invalid link
+	MouseMove, 61,  207 ;move mouse to the invalid link *VARIABLE*
 	applog("moved mouse to check if there is an invalid link")
 	Sleep,100
 	If(A_Cursor = "Unknown"){
@@ -253,8 +317,8 @@ steam_check_if_on_install_screen(){			;check if we are on the install screen
 	applog("checking if we are on the install window")
 	;steam_activate_window() <--- does not work, because title changed
 	steam_activate_install()
-	WinMove, 100, 100 ;lets move the window to the left.
-	applog("moved install window to 100,100")
+	;WinMove, 100, 100 ;lets move the window to the left.
+	;applog("moved install window to 100,100")
 	Sleep,100
 	WinGetTitle, WindowTitle,
 	StringTrimLeft,gameTitle,WindowTitle,10
@@ -336,5 +400,3 @@ applog("pressed escape!")
 applog(" ----- App End ------")
 ExitApp
 Return
-
-
