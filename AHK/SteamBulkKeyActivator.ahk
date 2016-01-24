@@ -12,8 +12,6 @@
 ;  See the License for the specific language governing permissions and
 ;  limitations under the License.
 
-
-
 ;Variables> 	http://ahkscript.org/docs/Variables.htm#Cursor
 ;Gendocs >   	https://github.com/fincs/GenDocs
 ;OutPutDebug 	http://www.autohotkey.com/docs/commands/OutputDebug.htm
@@ -35,6 +33,19 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 ;general methods/functions 
 
+;~ ScreenFLow Notes
+
+;~ 1 : Activation 1 basic info: click_btn(2, "next")
+;~ 2 : Activation 2 subscriber agreement: click_btn(2, "i agree")
+;~ 3 : Activation 3 product key: Enter Key and click_btn(2, "next")
+;~ NOW 3 options and different flows (handled in steam_check_if_key_worked())
+;~ 4a : Invalid Key or Too many attempts: click_btn(3, "cancel") ; check for link
+
+;~ 4b : Already Owned: click_btn(2, "next") ; fall through case
+;~ 4b1 : Install : click_btn(3, "cancel") 
+
+;~ 4c : Success : click_btn(3, "finish") ; check for print
+
 steam_activate_key(key){ 					;method that takes a string variable (the key) and places it into the key box of steam activator window
 	if(key = ""){ ;check to make sure key is not empty
 		applog("we got an empty key ? ignoring this one")
@@ -48,9 +59,7 @@ steam_activate_key(key){ 					;method that takes a string variable (the key) and
 	steam_close_all()
 	steam_open_activation_window()
 	get_button_pos()
-;	steam_move_window()
 	steam_click_next() ;or click_btn(2)
-;	steam_click_next()
 	steam_click_iagree() ;or click_btn(2)
 ;	steam_activate_product_code_field()
 	steam_send_input(key)
@@ -60,12 +69,9 @@ steam_activate_key(key){ 					;method that takes a string variable (the key) and
 	if(steam_check_if_key_worked()){
 		applog("[sucessfull] key activated without problems !")
 		log_to_file(", 'success' => 'true'",false)
-		;log_to_file("		<---- Activated",false)
 	}else{
 		applog("[faillure] key failed to activate !")
 		log_to_file(", 'success' => 'false' ",false)
-		;log_to_file("		<---- Failed",false)
-
 	}
 	applog("[end of this key]")
 	return
@@ -105,8 +111,13 @@ Loop, 3 {
 }
 }
 
-click_btn(num) {
+click_btn(num, logmsg="") {
+	global ypos, xpos1, xpos2, xpos3
 	MouseClick, left, xpos%num%, ypos
+	;TrayTip, , % Clicked xpos%num% ypos ;debug message
+	if (logmsg != "") {
+		applog(logmsg)
+	}
 }
 
 steam_click_next(){							;click the next button 
@@ -115,34 +126,33 @@ steam_click_next(){							;click the next button
 	Send {Tab}
 	Sleep,100
 	Send {Space}
-	applog("> clicked next 		[activation]")
+	;click_btn(2,"> clicked next 		[activation]")
 	Sleep,100
 	return
 }
 steam_click_iagree(){							;click the next button 
 	steam_activate_window()
 	;MouseClick, left,  320,  575 ;click next
-	Send {Tab}
-	Sleep,100
-	Send {Tab}
-	Sleep,100
-	Send {Space}
-	applog("> clicked I Agree	[activation]")
+	;~ Send {Tab}
+	;~ Sleep,100
+	;~ Send {Tab}
+	;~ Sleep,100
+	;~ Send {Space}
+	click_btn(2,"> clicked I Agree	[activation]")
 	Sleep,100
 	return
 }
 steam_click_cancel(){						;click the cancel button
 	steam_activate_window()
-	MouseClick, left,  422,  568 ;click cancel.
-	applog("> clicked cancel 	[activation]")
+	;MouseClick, left,  422,  568 ;click cancel.
+	click_btn(2,"> clicked cancel 	[activation]")
 	Sleep,100
 	return
 }
 steam_click_back(){							;click the back button
 	steam_activate_window()
 	;MouseClick, left,  212,  568 ;click back
-	click_btn(1)
-	applog("> clicked back 		[activation]")
+	click_btn(1,"> clicked back 		[activation]")
 	Sleep,100
 	return
 }
@@ -156,8 +166,7 @@ steam_click_print(){						;click the print button
 steam_install_click_back(){ 				;install window click back
 	steam_activate_install()
 	;MouseClick, left,  212,  568 ;click back
-	click_btn(1)
-	applog("> clicked back  	[install]")
+	click_btn(1,"> clicked back  	[install]")
 	Sleep,100
 	return
 
@@ -179,12 +188,11 @@ steam_install_click_cancel(){ 				;install window click cancel
 steam_install_click_next(){ 				;install window click next
 	steam_activate_install()
 	;MouseClick, left,  320,  575 ;click next
-	click_btn(2)
-	applog("> clicked next 		[install]")
+	click_btn(2,"> clicked next 		[install]")
 	Sleep,100
 	return
 }
-steam_activate_product_code_field(){		;activate the product code field
+steam_activate_product_code_field(){		;activate the product code field, maybe not necessary?
 	steam_activate_window()
 	MouseClick, left,  40,  190  ;click Product code field
 	applog("> clicked product code field")
@@ -271,7 +279,7 @@ steam_close_all(){ 							;this will close the activation window (it should not 
 }
 steam_check_if_key_worked(){ 				;check if steam key worked
 	applog("we need to check if the key worked")
-	if(steam_check_invalid_or_too_many_attempts()){
+	if(steam_check_invalid_or_too_many_attempts()){ ;4a
 		applog("product code invalid or to many key tries")
 		;Steam is whining (to many keys tries, or product code is invalid)
 		steam_click_cancel()
@@ -283,21 +291,21 @@ steam_check_if_key_worked(){ 				;check if steam key worked
 		;we need to press the print button & close that window again
 		applog("checking if this is a new product")
 		steam_click_print()
-		if(is_print_window()){
+		if(is_print_window()){ ;4c
 			applog("[new product] we activated a new product")
 			log_to_file(", 'new product' => 'true'",false)
 			;this means there is a print window & we closed it.
-		}else{
+			click_btn(3,"> clicked Finish 	[activation]")
+			return true
+		}else{ ;4b
 			applog("[duplicate product] we activated a duplicate product")
 			log_to_file(", 'new product' => 'false'",false)
 			;this means there is no print window
+			click_btn(2,"> clicked next [activation]")
+			steam_check_if_on_install_screen()
+			click_btn(3,"> clicked Cancel 	[Install]")
+			return true
 		}
-		steam_click_next() ;we click next (past print screen)
-		applog("now we need to check if we are on the install screen")
-		;in order to see if they key worked we need to check if we are on the install screen, if we are press cancel & report that the key worked
-		steam_check_if_on_install_screen()
-		steam_install_click_cancel()
-
 	}
 }
 steam_check_invalid_or_too_many_attempts(){ ;check if steam is angry at us
