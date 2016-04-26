@@ -362,7 +362,7 @@ is_print_window(){							;way to check if we have a new product or a duplicate
 
 log_to_file(text,newline){					;log to the keys file.
 	if(newline){
-		FileAppend,%text%`n, %A_WorkingDir%\activation.log
+		FileAppend,`n%text%, %A_WorkingDir%\activation.log
 		return
 	}else{
 		FileAppend,%text%, %A_WorkingDir%\activation.log
@@ -408,40 +408,38 @@ applog("is x64      =>" . A_Is64bitOS)
 applog("is elevated =>" . A_IsAdmin)
 applog(" ---- console log -----")
 ;MsgBox, 64, Automation, Please do not touch the keyboard or mouse while the macro is running.`n(press escape to stop the program at any time)
+IfExist, %A_WorkingDir%\activation.log
+{
+	FileDelete, %A_WorkingDir%\activation.log
+
+}
 IfExist, %A_WorkingDir%\keys.txt
 {
 	applog("found keys.txt")
 	FileRead, keytext, %A_WorkingDir%\keys.txt
-	;Loop, read, %A_WorkingDir%\keys.txt
-	;{
-	;	Loop, parse, A_LoopReadLine, %A_Tab%
-	;	{
-	;		if(RegExMatch(A_LoopField,"^\w{5}-\w{5}-\w{5}$")){
-	;			steam_activate_key(A_LoopField)
-	;			Sleep,1000
-	;		}
-	;	}
-	;}
-	MsgBox, 64, Success!, %keytext% ;We looped through the entire keys.txt file.
-	;run notepad %A_WorkingDir%\activation.log
-
+	MsgBox, 64, Automation, Please do not touch the keyboard or mouse while the macro is running.`n(press escape to stop the program at any time)
 }else{
-	;add a keys.txt file plz
-	applog("we did not find any keys in keys.txt ! ")
-
+	;read keys from edit box
 	keytext:=MultiLineInput("Enter keys here or into keys.txt and restart.")
 
-	;MsgBox, 48, No keys.txt found !, Please add a keys.txt file in the root of this program.`n1 key per line.`nxxxx-xxxx-xxxx-xxxx
-	;run notepad %A_WorkingDir%\keys.txt
 }
-
+linecount=0
+keycount=0
 Loop, parse, keytext, `n, `r
 {
-	if(RegExMatch(A_LoopField,"^\w{5}-\w{5}-\w{5}$")){
+	;will only activate keys in the format XXXXX-XXXXX-XXXXX
+	;this is mostly for easy pasting from humble bundle and indiegala key pages
+	if(RegExMatch(A_LoopField,"^\w{5}-\w{5}-\w{5}$")){ 
 		steam_activate_key(A_LoopField)
 		Sleep,1000
+		keycount++
 	}
+	linecount++
 }
+
+FormatTime, Time,, dd/MM/yyyy HH:mm:ss tt
+log_to_file("[" . Time . "] " . "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ",true)
+log_to_file("[" . Time . "] " . "Processing complete! Processed " . keycount . " keys in " . linecount . " lines.",true)
 run notepad %A_WorkingDir%\activation.log
 
 applog("exiting app! bye bye !")
