@@ -1,5 +1,24 @@
-#Steam Bulk Key Activator
+Steam Bulk Key Activator
 =====================
+
+## Fixed and working fork
+The repository is forked from [https://github.com/colingg/SteamBulkKeyActivator](https://github.com/colingg/SteamBulkKeyActivator)
+
+I made some modifications to make it work for steam today.
+
+### New features:
+
+1. Ignore blank lines
+2. Ignore lines starting with ```#```
+3. Additional ```duplicate.log``` with both CDKEY and the name of the product. You can simply log in another steam account, rename ```duplicate.log``` to ```keys.txt``` and add the duplicate games into the new account. Or, share them with your friend (P.S, As long as the product is in your library, the result will be ```duplicate``` whether or not the CDKEY is redeemed, so it's your job to keep the records).
+4. Additional ```failed.log``` with CDKEY in it. If you failed because of ```Too many attempts``` and wish to retry, simply rename ```failed.log``` to ```keys.txt``` and run it again.
+5. Additional ```success.log``` with CDKEY in it. 
+
+### Notice:
+
+If english is not your default language, please set *both* the language of steam and windows to english or this script will not function well. (This applies to the original version of this script as well)
+
+If you have an IME, switch it off using ```Win+Space``` before running this script, otherwise nothing will be typed in the CDKEY textbox (the IME will block the script from sending keys into it).
 
 ## Activate keys in bulk
 ######A little macro program that allows you to activate steam keys in bulk
@@ -14,9 +33,7 @@ you can press escape at any time to cancel the macro
 
 ##Download 	
 
-![Release](https://raw.githubusercontent.com/colingg/SteamBulkKeyActivator/master/Recources/web/Releases.png)
-
-[You can download the latest release over here](https://github.com/colingg/SteamBulkKeyActivator/releases)
+To run it, you only need to download either of the executable in the [Builds](https://github.com/KevinWang15/SteamBulkKeyActivator/tree/master/Builds) folder, nothing else is needed.
 
 ##Demo
 ![Demo](https://raw.githubusercontent.com/colingg/SteamBulkKeyActivator/master/Recources/web/demo.gif)
