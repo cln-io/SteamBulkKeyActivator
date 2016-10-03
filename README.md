@@ -16,7 +16,7 @@ I made some modifications to make it work for steam today.
 
 ### Notice:
 
-If english is not your default language, please set the language of windows to english or this script will not function well. (This applies to the original version of this script as well)
+If english is not your default language, please set *both* the language of steam and windows to english or this script will not function well. (This applies to the original version of this script as well)
 
 If you have an IME, switch it off using ```Win+Space``` before running this script, otherwise nothing will be typed in the CDKEY textbox (the IME will block the script from sending keys into it).
 

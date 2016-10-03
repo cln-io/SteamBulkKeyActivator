@@ -162,7 +162,12 @@ steam_activate_window(){					;activate the steam activation window
 	Sleep, 100 ;let windows recover a bit ! you slow piece of shit !
 }
 steam_activate_install(){					;activate the installer window
-	WinWait, Install -, 
+	WinWait, Install -, , 5
+	if ErrorLevel
+	{    
+		applog("> no install window after 5 secs")
+	    return false
+	}
 	IfWinNotActive, Install -, , WinActivate, Install -, 
 	WinWaitActive, Install -, 
 	applog("waited for install window and activated it")
@@ -244,7 +249,6 @@ steam_check_if_key_worked(key){ 				;check if steam key worked
 			;this means there is a print window & we closed it.
 			is_successful:=true
 		}else{
-			applog("[duplicate product] we activated a duplicate product")
 			log_to_file(", 'new product' => 'false'",false)
 			is_successful:=false
 		}
@@ -255,9 +259,16 @@ steam_check_if_key_worked(key){ 				;check if steam key worked
 		steam_click_next() ;we click next (past print screen)
 		applog("now we need to check if we are on the install screen")
 		;in order to see if they key worked we need to check if we are on the install screen, if we are press cancel & report that the key worked
-		steam_check_if_on_install_screen(key,is_successful)
-		steam_install_click_cancel()
-
+		check := steam_check_if_on_install_screen(key,is_successful)
+		if(check = false){
+			;Product already activated on another account
+			steam_click_cancel()
+			failedlog(key)
+			return false
+		}else{
+			steam_install_click_cancel()
+			return true
+		}
 	}
 }
 steam_check_invalid_or_too_many_attempts(){ ;check if steam is angry at us
@@ -276,16 +287,21 @@ steam_check_invalid_or_too_many_attempts(){ ;check if steam is angry at us
 steam_check_if_on_install_screen(key,is_successful){			;check if we are on the install screen
 	applog("checking if we are on the install window")
 	;steam_activate_window() <--- does not work, because title changed
-	steam_activate_install()
-	WinMove, 100, 100 ;lets move the window to the left.
-	applog("moved install window to 100,100")
-	Sleep,100
-	WinGetTitle, WindowTitle,
-	StringTrimLeft,gameTitle,WindowTitle,10
-	applog("adding game title to key log")
-	log_to_file(", 'game' => '" . gameTitle . "'",false)
-	If(!is_successful){
-		duplicatelog(key . "`n# " . gameTitle . "`n")
+	check := steam_activate_install()
+	if(check=false){
+		return false
+	}else{
+		WinMove, 100, 100 ;lets move the window to the left.
+		applog("moved install window to 100,100")
+		Sleep,100
+		WinGetTitle, WindowTitle,
+		StringTrimLeft,gameTitle,WindowTitle,10
+		applog("adding game title to key log")
+		log_to_file(", 'game' => '" . gameTitle . "'",false)
+		If(!is_successful){
+			duplicatelog(key . "`n# " . gameTitle . "`n")
+		}
+		return true
 	}
 }
 is_print_window(){							;way to check if we have a new product or a duplicate
