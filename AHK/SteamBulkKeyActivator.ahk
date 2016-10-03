@@ -1,3 +1,8 @@
+; Fixed and working fork
+; https://github.com/KevinWang15/SteamBulkKeyActivator
+; Oct 03 2016
+
+
 ;   Copyright 2014 colingg (colin.gg)
 ;
 ;   Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,6 +40,11 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 ;general methods/functions 
 
+FormatTime, Time,, dd/MM/yyyy HH:mm:ss tt
+FileAppend, `n# %Time%`n, %A_WorkingDir%\failed.log
+
+
+
 steam_activate_key(key){ 					;method that takes a string variable (the key) and places it into the key box of steam activator window
 	if(key = ""){ ;check to make sure key is not empty
 		applog("we got an empty key ? ignoring this one")
@@ -54,7 +64,7 @@ steam_activate_key(key){ 					;method that takes a string variable (the key) and
 	steam_send_input(key)
 	steam_click_next()
 	steam_wait_until_done()
-	if(steam_check_if_key_worked()){
+	if(steam_check_if_key_worked(key)){
 		applog("[sucessfull] key activated without problems !")
 		log_to_file(", 'success' => 'true'",false)
 		;log_to_file("		<---- Activated",false)
@@ -72,35 +82,42 @@ steam_activate_key(key){ 					;method that takes a string variable (the key) and
 
 steam_click_next(){							;click the next button 
 	steam_activate_window()
-	MouseClick, left,  320,  575 ;click next
+	MouseClick, left,  328,  378 ;click next
 	applog("> clicked next 		[activation]")
 	Sleep,100
 	return
 }
 steam_click_cancel(){						;click the cancel button
 	steam_activate_window()
-	MouseClick, left,  422,  568 ;click cancel.
+	MouseClick, left,  422,  365 ;click cancel.
 	applog("> clicked cancel 	[activation]")
 	Sleep,100
 	return
 }
 steam_click_back(){							;click the back button
 	steam_activate_window()
-	MouseClick, left,  212,  568 ;click back
+	MouseClick, left,  212,  365 ;click back
+	applog("> clicked back 		[activation]")
+	Sleep,100
+	return
+}
+steam_click_finish(){	
+	steam_activate_window()
+	MouseClick, left,  429,  375 ;click back
 	applog("> clicked back 		[activation]")
 	Sleep,100
 	return
 }
 steam_click_print(){						;click the print button
 	steam_activate_window()
-	MouseClick, left,  221,  407 ;click print
+	MouseClick, left,  235,  280 ;click print
 	applog("> clicked print		[activation]")
 	Sleep,100
 	return
 }
 steam_install_click_back(){ 				;install window click back
 	steam_activate_install()
-	MouseClick, left,  212,  568 ;click back
+	MouseClick, left,  212,  365 ;click back
 	applog("> clicked back  	[install]")
 	Sleep,100
 	return
@@ -108,14 +125,14 @@ steam_install_click_back(){ 				;install window click back
 }
 steam_install_click_cancel(){ 				;install window click cancel
 	steam_activate_install()
-	MouseClick, left,  422,  568 ;click cancel.
+	MouseClick, left,  422,  365 ;click cancel.
 	applog("> clicked cancel 	[install]")
 	Sleep,100
 	return
 }
 steam_install_click_next(){ 				;install window click next
 	steam_activate_install()
-	MouseClick, left,  320,  575 ;click next
+	MouseClick, left,  320,  365 ;click next
 	applog("> clicked next 		[install]")
 	Sleep,100
 	return
@@ -205,12 +222,13 @@ steam_close_all(){ 							;this will close the activation window (it should not 
 	return
 
 }
-steam_check_if_key_worked(){ 				;check if steam key worked
+steam_check_if_key_worked(key){ 				;check if steam key worked
 	applog("we need to check if the key worked")
 	if(steam_check_invalid_or_too_many_attempts()){
 		applog("product code invalid or to many key tries")
 		;Steam is whining (to many keys tries, or product code is invalid)
 		steam_click_cancel()
+		failedlog(key)
 		return false
 	}else{
 		applog("steam reports that our key is valid")
@@ -222,16 +240,22 @@ steam_check_if_key_worked(){ 				;check if steam key worked
 		if(is_print_window()){
 			applog("[new product] we activated a new product")
 			log_to_file(", 'new product' => 'true'",false)
+			successlog(key)
 			;this means there is a print window & we closed it.
+			is_successful:=true
 		}else{
 			applog("[duplicate product] we activated a duplicate product")
 			log_to_file(", 'new product' => 'false'",false)
-			;this means there is a print window & we closed it.
+			is_successful:=false
+		}
+		if(is_successful){
+			steam_click_finish()
+			return true
 		}
 		steam_click_next() ;we click next (past print screen)
 		applog("now we need to check if we are on the install screen")
 		;in order to see if they key worked we need to check if we are on the install screen, if we are press cancel & report that the key worked
-		steam_check_if_on_install_screen()
+		steam_check_if_on_install_screen(key,is_successful)
 		steam_install_click_cancel()
 
 	}
@@ -249,7 +273,7 @@ steam_check_invalid_or_too_many_attempts(){ ;check if steam is angry at us
 		return false
 	}
 }
-steam_check_if_on_install_screen(){			;check if we are on the install screen
+steam_check_if_on_install_screen(key,is_successful){			;check if we are on the install screen
 	applog("checking if we are on the install window")
 	;steam_activate_window() <--- does not work, because title changed
 	steam_activate_install()
@@ -260,6 +284,9 @@ steam_check_if_on_install_screen(){			;check if we are on the install screen
 	StringTrimLeft,gameTitle,WindowTitle,10
 	applog("adding game title to key log")
 	log_to_file(", 'game' => '" . gameTitle . "'",false)
+	If(!is_successful){
+		duplicatelog(key . "`n# " . gameTitle . "`n")
+	}
 }
 is_print_window(){							;way to check if we have a new product or a duplicate
 	applog("waiting 5 seconds for the print window to pop up")
@@ -293,6 +320,18 @@ applog(text){								;log to the application file
 	FileAppend, %Time% %text%`n, %A_WorkingDir%\app.log
 }
 
+successlog(text){						
+	FileAppend, %text%`n, %A_WorkingDir%\success.log
+}
+
+failedlog(text){						
+	FileAppend, %text%`n, %A_WorkingDir%\failed.log
+}
+
+duplicatelog(text){						
+	FileAppend, %text%`n, %A_WorkingDir%\duplicate.log
+}
+
 
 ;#----------------------------------------- Methods / functions above  ----------------------------------------- 
 ;Main code goes here !
@@ -315,7 +354,18 @@ IfExist, %A_WorkingDir%\keys.txt
 	{
 		Loop, parse, A_LoopReadLine, %A_Tab%
 		{
-			steam_activate_key(A_LoopField)
+			StringReplace , key, A_LoopField, %A_Space%,,All
+			
+			if(key = ""){
+				continue
+			}
+			
+			IfInString, key, #
+			{
+				continue
+			}
+
+			steam_activate_key(key)
 			Sleep,1000
 		}
 	}
