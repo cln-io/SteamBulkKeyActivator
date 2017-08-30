@@ -1,8 +1,8 @@
-#Steam Bulk Key Activator
+# Steam Bulk Key Activator
 =====================
 
 ## Activate keys in bulk
-######A little macro program that allows you to activate steam keys in bulk
+###### A little macro program that allows you to activate steam keys in bulk
 
 Add a keys.txt file in the root directory of the binary/script.
 add 1 key per line and save the file.
@@ -12,16 +12,16 @@ After a successful activation it will cancel the game's installation so it does 
 Do not touch keyboard and or mouse
 you can press escape at any time to cancel the macro
 
-##Download 	
+## Download 	
 
 ![Release](https://raw.githubusercontent.com/colingg/SteamBulkKeyActivator/master/Recources/web/Releases.png)
 
 [You can download the latest release over here](https://github.com/colingg/SteamBulkKeyActivator/releases)
 
-##Demo
+## Demo
 ![Demo](https://raw.githubusercontent.com/colingg/SteamBulkKeyActivator/master/Recources/web/demo.gif)
 
-##VAC anti-cheat concerns
+## VAC anti-cheat concerns
 This is a script that uses Autohotkey to emulate keyboard and mouse, no reasons to be concerned about VAC. ;)
 
 This script is written in AutoHotKey  
@@ -30,7 +30,7 @@ http://ahkscript.org/
 
 This is a script that automates the repetitive task of activating steam keys. as this does not inject anything whatsoever you don't have to worry about VAC.
 
-##License
+## License
 	   Copyright 2014 colingg (colin.gg)
 
 	   Licensed under the Apache License, Version 2.0 (the "License");
