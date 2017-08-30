@@ -26,7 +26,7 @@ This is a script that uses Autohotkey to emulate keyboard and mouse, no reasons 
 
 This script is written in AutoHotKey  
 http://ahkscript.org/
->AutoHotkey (AHK) is a free, open-source macro-creation and automation software for Windows that allows users to automate repetitive tasks. It is driven by a scripting language that was initially aimed at providing keyboard shortcuts, otherwise known as hotkeys, that over time evolved into a full-fledged scripting language. 
+> AutoHotkey (AHK) is a free, open-source macro-creation and automation software for Windows that allows users to automate repetitive tasks. It is driven by a scripting language that was initially aimed at providing keyboard shortcuts, otherwise known as hotkeys, that over time evolved into a full-fledged scripting language. 
 
 This is a script that automates the repetitive task of activating steam keys. as this does not inject anything whatsoever you don't have to worry about VAC.
 
