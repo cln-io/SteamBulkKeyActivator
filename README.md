@@ -1,3 +1,8 @@
+# Archived
+I'm no longer maintaining this repo, check out its forks, or https://store.steampowered.com/account/registerkey
+
+
+
 # Steam Bulk Key Activator
 =====================
 
